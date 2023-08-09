@@ -21,21 +21,7 @@ export default function RootLayout({
       <html lang="en">
 
         <body className={inter.className}>
-          <Topbar />
-
-          <main>
-            <LeftSidebar />
-
-            <section className='main-container'>
-              <div className='w-full max-w4xl'>
-                {children}
-              </div>
-            </section>
-            <RightSidebar />
-          </main>
-
-          <Buttombar />
-          
+          {children}
           
         </body>
 
