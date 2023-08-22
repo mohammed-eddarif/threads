@@ -22,6 +22,9 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { isBase64Image } from "@/lib/utils";
+import { updateUser } from "@/lib/actions/user.actions";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 
 
@@ -40,8 +43,10 @@ interface Props {
 const AccountProfile = ({ user, btnTitle }: Props) => {
 
   const [files, setFiles] = useState<File[]>([]);
+
   const { startUpload } = useUploadThing("media");
- 
+  const pathname = usePathname();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof UserValidation>>({
     resolver: zodResolver(UserValidation),
@@ -64,7 +69,20 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         values.profile_photo = imgRes[0].url;
       }
     }
-    // TODO : Update user profile.
+    await updateUser({
+      username : values.username,
+      name: values.name,
+      bio: values.bio,
+      image: values.profile_photo,
+      userId: user.id,
+      path: pathname
+    });
+
+    if (pathname === "/profile/edit") {
+      router.back();
+    } else {
+      router.push("/");
+    }
   }
 
 
@@ -131,6 +149,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                   onChange={(e) => handleImage(e, field.onChange)}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
